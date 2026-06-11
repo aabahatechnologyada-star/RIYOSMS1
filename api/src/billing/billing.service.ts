@@ -264,7 +264,7 @@ export class BillingService {
     const currentSubscription = await this.getCurrentSubscription(user)
     if ((currentSubscription?.plan as Plan)?.name ===  payload.planName) {
       throw new BadRequestException({
-        message: `You are already on ${payload.planName} plan, please contact billing@textbee.dev to get a custom plan`,
+        message: `You are already on ${payload.planName} plan, please contact billing@riyosms.com to get a custom plan`,
         code: 'ALREADY_ON_PLAN',
       })
     }

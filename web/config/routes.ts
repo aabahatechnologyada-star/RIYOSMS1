@@ -1,8 +1,8 @@
 export const Routes = {
-  landingPage: 'https://textbee.dev',
+  landingPage: 'https://riyosms.com',
   contribute: '/contribute',
-  useCases: 'https://textbee.dev/use-cases',
-  quickstart: 'https://textbee.dev/quickstart',
+  useCases: 'https://riyosms.com/use-cases',
+  quickstart: 'https://riyosms.com/quickstart',
   login: '/login',
   register: '/register',
   logout: '/logout',
@@ -11,9 +11,9 @@ export const Routes = {
 
   dashboard: '/dashboard',
 
-  downloadAndroidApp: 'https://textbee.dev/download',
-  privacyPolicy: 'https://textbee.dev/privacy-policy',
-  refundPolicy: 'https://textbee.dev/refund-policy',
-  termsOfService: 'https://textbee.dev/terms-of-service',
-  statusPage: 'https://status.textbee.dev',
+  downloadAndroidApp: 'https://riyosms.com/download',
+  privacyPolicy: 'https://riyosms.com/privacy-policy',
+  refundPolicy: 'https://riyosms.com/refund-policy',
+  termsOfService: 'https://riyosms.com/terms-of-service',
+  statusPage: 'https://status.riyosms.com',
 }

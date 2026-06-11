@@ -1,11 +1,11 @@
-# textbee.dev - android sms gateway
+# riyosms.com - android sms gateway
 
-textbee.dev is an open-source SMS gateway that enables users to send and receive SMS messages via a web dashboard or a REST API. Perfect for businesses, developers, and hobbyists who need a reliable and cost-effective way to automate SMS messaging.
+riyosms.com is an open-source SMS gateway that enables users to send and receive SMS messages via a web dashboard or a REST API. Perfect for businesses, developers, and hobbyists who need a reliable and cost-effective way to automate SMS messaging.
 
 - **Technology stack**: React, Next.js, Node.js, NestJs, MongoDB, Android, Java
-- **Link**: [https://textbee.dev](https://textbee.dev/)
+- **Link**: [https://riyosms.com](https://riyosms.com/)
 
-![](https://ik.imagekit.io/vernu/textbee/textbee.dev-landingpage-screenshot.png?updatedAt=1749102564772)
+![](https://ik.imagekit.io/riyosms/riyosms/riyosms.com-landingpage-screenshot.png?updatedAt=1749102564772)
 
 
 ## Features
@@ -24,10 +24,10 @@ textbee.dev is an open-source SMS gateway that enables users to send and receive
 
 ## Getting Started
 
-1. Go to [textbee.dev](https://textbee.dev) and register or login with your account
-2. Install the app on your android phone from [textbee.dev/download](https://textbee.dev/download)
+1. Go to [riyosms.com](https://riyosms.com) and register or login with your account
+2. Install the app on your android phone from [riyosms.com/download](https://riyosms.com/download)
 3. Open the app and grant the permissions for SMS
-4. Go to [textbee.dev/dashboard](https://textbee.dev/dashboard) and click register device/ generate API Key
+4. Go to [riyosms.com/dashboard](https://riyosms.com/dashboard) and click register device/ generate API Key
 5. Scan the QR code with the app or enter the API key manually
 6. You are ready to send SMS messages from the dashboard or from your application via the REST API
 
@@ -37,7 +37,7 @@ textbee.dev is an open-source SMS gateway that enables users to send and receive
 const API_KEY = 'YOUR_API_KEY';
 const DEVICE_ID = 'YOUR_DEVICE_ID';
 
-await axios.post(`https://api.textbee.dev/api/v1/gateway/devices/${DEVICE_ID}/send-sms`, {
+await axios.post(`https://riyosms1.onrender.com/api/v1/gateway/devices/${DEVICE_ID}/send-sms`, {
   recipients: [ '+251912345678' ],
   message: 'Hello World!',
 }, {
@@ -51,7 +51,7 @@ await axios.post(`https://api.textbee.dev/api/v1/gateway/devices/${DEVICE_ID}/se
 **Code Snippet**: Curl command to send an SMS message via the REST API
 
 ```bash
-curl -X POST "https://api.textbee.dev/api/v1/gateway/devices/YOUR_DEVICE_ID/send-sms" \
+curl -X POST "https://riyosms1.onrender.com/api/v1/gateway/devices/YOUR_DEVICE_ID/send-sms" \
   -H 'x-api-key: YOUR_API_KEY' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -70,7 +70,7 @@ To receive SMS messages, you can enable the feature from the mobile app. You can
 const API_KEY = 'YOUR_API_KEY';
 const DEVICE_ID = 'YOUR_DEVICE_ID';
 
-await axios.get(`https://api.textbee.dev/api/v1/gateway/devices/${DEVICE_ID}/get-received-sms`, {
+await axios.get(`https://riyosms1.onrender.com/api/v1/gateway/devices/${DEVICE_ID}/get-received-sms`, {
   headers: {
     'x-api-key': API_KEY,
   },
@@ -81,7 +81,7 @@ await axios.get(`https://api.textbee.dev/api/v1/gateway/devices/${DEVICE_ID}/get
 **Code Snippet**: Curl command to fetch received SMS messages
 
 ```bash
-curl -X GET "https://api.textbee.dev/api/v1/gateway/devices/YOUR_DEVICE_ID/get-received-sms"\
+curl -X GET "https://riyosms1.onrender.com/api/v1/gateway/devices/YOUR_DEVICE_ID/get-received-sms"\
   -H "x-api-key: YOUR_API_KEY"
 ```
 
@@ -102,7 +102,7 @@ curl -X GET "https://api.textbee.dev/api/v1/gateway/devices/YOUR_DEVICE_ID/get-r
 
 1. Clone the repository and navigate to the Android project directory.
 2. Update the `google-services.json` file with your Firebase project configuration.
-3. Update every occurrence of `textbee.dev` with your own domain in the project.
+3. Update every occurrence of `riyosms.com` with your own domain in the project.
 4. Build the app using Android Studio or the command line:
    ```bash
    ./gradlew assembleRelease
@@ -147,11 +147,11 @@ curl -X GET "https://api.textbee.dev/api/v1/gateway/devices/YOUR_DEVICE_ID/get-r
 1. Install `pnpm`, `pm2`, and `Caddy` on your VPS.
 2. Use `pm2` to manage your Node.js processes:
    ```bash
-   pm2 start dist/main.js --name textbee-api
+   pm2 start dist/main.js --name riyosms-api
    ```
 3. Configure `Caddy` to serve your web application and API. Example Caddyfile:
    ```
-   textbee.dev {
+   riyosms.com {
        reverse_proxy /api/* localhost:3000
        reverse_proxy /* localhost:3001
    }
@@ -167,7 +167,7 @@ curl -X GET "https://api.textbee.dev/api/v1/gateway/devices/YOUR_DEVICE_ID/get-r
    && cd ../api && cp .env.example .env
    ```
 2. Navigate to root folder and execute docker-compose.yml file.    
-   This will spin up `web` container, `api` container alongside with `MongoDB` and `MongoExpress`. `TextBee` database will be automatically created.
+   This will spin up `web` container, `api` container alongside with `MongoDB` and `MongoExpress`. `RiyoSms` database will be automatically created.
    ```bash
    docker compose up -d
    ```
@@ -180,17 +180,16 @@ curl -X GET "https://api.textbee.dev/api/v1/gateway/devices/YOUR_DEVICE_ID/get-r
 
 Contributions are welcome!
 
-1. [Fork](https://github.com/vernu/textbee/fork) the project.
+1. [Fork](https://github.com/riyosms/riyosms/fork) the project.
 2. Create a feature or bugfix branch from `main` branch.
 3. Make sure your commit messages and PR comment summaries are descriptive.
 4. Create a pull request to the `main` branch.
 
 ## Bug Reporting and Feature Requests
 
-Please feel free to [create an issue](https://github.com/vernu/textbee/issues/new) in the repository for any bug reports or feature requests. Make sure to provide a detailed description of the issue or feature you are requesting and properly label whether it is a bug or a feature request.
+Please feel free to [create an issue](https://github.com/riyosms/riyosms/issues/new) in the repository for any bug reports or feature requests. Make sure to provide a detailed description of the issue or feature you are requesting and properly label whether it is a bug or a feature request.
 
-Please note that if you discover any vulnerability or security issue, we kindly request that you refrain from creating a public issue. Instead, send an email detailing the vulnerability to contact@textbee.dev.
+Please note that if you discover any vulnerability or security issue, we kindly request that you refrain from creating a public issue. Instead, send an email detailing the vulnerability to contact@riyosms.com.
 
 ## For support, feedback, and questions
-Feel free to reach out to us at contact@textbee.dev or [Join our Discord server](https://discord.gg/d7vyfBpWbQ)
-# RIYOSMS1
+Feel free to reach out to us at contact@riyosms.com or [Join our Discord server](https://discord.gg/d7vyfBpWbQ)
