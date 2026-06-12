@@ -48,7 +48,7 @@ android {
     productFlavors {
         dev {
             dimension "environment"
-            applicationId "com.riyosms.com.dev"
+            applicationId "com.riyosms.com"
             versionNameSuffix "-dev"
             buildConfigField "String", "API_BASE_URL", '"https://riyosms1.onrender.com/api/v1/"'
             buildConfigField "String", "ENVIRONMENT", '"development"'

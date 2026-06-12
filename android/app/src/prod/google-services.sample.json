@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "YOUR_PROD_PROJECT_NUMBER",
-    "project_id": "your-prod-project-id",
-    "storage_bucket": "your-prod-project-id.appspot.com"
+    "project_number": "65256917963",
+    "project_id": "riyosms",
+    "storage_bucket": "riyosms.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:YOUR_PROD_PROJECT_NUMBER:android:YOUR_PROD_APP_ID",
+        "mobilesdk_app_id": "1:65256917963:android:c0abe229d8ad499ae6844e",
         "android_client_info": {
           "package_name": "com.riyosms.com"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "YOUR_PROD_CLIENT_ID",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "YOUR_PROD_API_KEY"
+          "current_key": "AIzaSyAIcKdMHCjtjNsJMR-VRjv8EKyyWzImqvg"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "YOUR_PROD_CLIENT_ID",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
