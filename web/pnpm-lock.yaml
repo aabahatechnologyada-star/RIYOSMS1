@@ -96,11 +96,11 @@ importers:
         specifier: ^0.453.0
         version: 0.453.0(react@18.2.0)
       next:
-        specifier: ^14.2.35
-        version: 14.2.35(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 14.2.26
+        version: 14.2.26(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next-auth:
         specifier: ^4.24.10
-        version: 4.24.10(next@14.2.35(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(nodemailer@6.9.16)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 4.24.10(next@14.2.26(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(nodemailer@6.9.16)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next-themes:
         specifier: ^0.4.3
         version: 0.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
