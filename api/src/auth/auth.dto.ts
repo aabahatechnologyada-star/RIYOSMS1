@@ -51,10 +51,15 @@ export class UpdateOnboardingDTO {
   @ApiProperty({ required: false })
   currentStepId?: string
 
-  @ApiProperty({ required: false, description: 'Only allowed for optional steps' })
+  @ApiProperty({
+    required: false,
+    description: 'Only allowed for optional steps',
+  })
   skipStepId?: string
 
-  @ApiProperty({ required: false, description: 'When true, sets onboarding.completedAt' })
+  @ApiProperty({
+    required: false,
+    description: 'When true, sets onboarding.completedAt',
+  })
   complete?: boolean
 }
-

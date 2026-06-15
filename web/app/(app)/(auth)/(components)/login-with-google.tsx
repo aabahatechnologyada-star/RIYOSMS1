@@ -41,7 +41,6 @@ export default function LoginWithGoogle() {
       width={'100%'}
       size='large'
       shape='pill'
-      locale='en'
       theme='outline'
       text='continue_with'
     />

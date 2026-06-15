@@ -34,10 +34,12 @@ export class SupportService {
     try {
       // Check rate limit: max 3 requests per 24 hours
       const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
-      const recentRequestsCount = await this.supportMessageModel.countDocuments({
-        email: sanitizedDto.email,
-        createdAt: { $gte: twentyFourHoursAgo },
-      })
+      const recentRequestsCount = await this.supportMessageModel.countDocuments(
+        {
+          email: sanitizedDto.email,
+          createdAt: { $gte: twentyFourHoursAgo },
+        },
+      )
 
       if (recentRequestsCount >= 3) {
         throw new HttpException(
@@ -52,10 +54,7 @@ export class SupportService {
 
       // Determine if the user is registered
       let user = null
-      if (
-        sanitizedDto.user &&
-        isValidObjectId(sanitizedDto.user)
-      ) {
+      if (sanitizedDto.user && isValidObjectId(sanitizedDto.user)) {
         user = await this.userModel.findById(sanitizedDto.user)
       }
 
@@ -92,10 +91,7 @@ export class SupportService {
     const { turnstileToken, ...sanitizedDto } = createSupportMessageDto
     try {
       // Check if user exists
-      if (
-        !sanitizedDto.user ||
-        !isValidObjectId(sanitizedDto.user)
-      ) {
+      if (!sanitizedDto.user || !isValidObjectId(sanitizedDto.user)) {
         throw new NotFoundException('User not found')
       }
 
@@ -119,9 +115,7 @@ export class SupportService {
       }
 
       // Create and save the support message
-      const createdMessage = new this.supportMessageModel(
-        sanitizedDto,
-      )
+      const createdMessage = new this.supportMessageModel(sanitizedDto)
       const savedMessage = await createdMessage.save()
 
       // Update user's account deletion requested timestamp

@@ -95,10 +95,7 @@ export class WebhookController {
 
   @Delete(':webhookId')
   @UseGuards(AuthGuard)
-  async deleteWebhook(
-    @Request() req,
-    @Param('webhookId') webhookId: string,
-  ) {
+  async deleteWebhook(@Request() req, @Param('webhookId') webhookId: string) {
     const data = await this.webhookService.remove({
       user: req.user,
       webhookId,

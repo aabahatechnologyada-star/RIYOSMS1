@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { Routes } from './config/routes'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Extract token using the secret for session-based authentication
   const token = await getToken({
     req: request,

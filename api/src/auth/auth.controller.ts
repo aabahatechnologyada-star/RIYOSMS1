@@ -108,10 +108,7 @@ export class AuthController {
   })
   @ApiBearerAuth()
   @Get('/api-keys')
-  async getApiKey(
-    @Request() req,
-    @Query('status') status?: string,
-  ) {
+  async getApiKey(@Request() req, @Query('status') status?: string) {
     const data = await this.authService.getUserApiKeys(req.user, status)
     return { data }
   }
@@ -150,10 +147,7 @@ export class AuthController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Patch('/onboarding')
-  async updateOnboarding(
-    @Body() input: UpdateOnboardingDTO,
-    @Request() req,
-  ) {
+  async updateOnboarding(@Body() input: UpdateOnboardingDTO, @Request() req) {
     const user = await this.usersService.updateOnboarding(input, req.user)
     return { data: user }
   }
@@ -186,7 +180,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @Post('/verify-email')
-  async verifyEmail(@Body() input: { userId: string; verificationCode: string }) {
+  async verifyEmail(
+    @Body() input: { userId: string; verificationCode: string },
+  ) {
     return await this.authService.verifyEmail(input)
   }
 }

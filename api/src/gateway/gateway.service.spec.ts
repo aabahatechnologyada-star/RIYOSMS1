@@ -16,7 +16,11 @@ import { HttpException, HttpStatus } from '@nestjs/common'
 import * as firebaseAdmin from 'firebase-admin'
 import { SMSType } from './sms-type.enum'
 import { WebhookEvent } from '../webhook/webhook-event.enum'
-import { RegisterDeviceInputDTO, SendBulkSMSInputDTO, SendSMSInputDTO } from './gateway.dto'
+import {
+  RegisterDeviceInputDTO,
+  SendBulkSMSInputDTO,
+  SendSMSInputDTO,
+} from './gateway.dto'
 import { User } from '../users/schemas/user.schema'
 import { BatchResponse } from 'firebase-admin/messaging'
 
@@ -144,16 +148,16 @@ describe('GatewayService', () => {
   })
 
   describe('registerDevice', () => {
-    const mockUser = { 
-      _id: 'user123', 
-      name: 'Test User', 
+    const mockUser = {
+      _id: 'user123',
+      name: 'Test User',
       email: 'test@example.com',
       password: 'password',
       role: 'user',
       createdAt: new Date(),
-      updatedAt: new Date()
-    } as unknown as User;
-    
+      updatedAt: new Date(),
+    } as unknown as User
+
     const mockDeviceInput: RegisterDeviceInputDTO = {
       model: 'Pixel 6',
       buildId: 'build123',
@@ -178,11 +182,11 @@ describe('GatewayService', () => {
       // The implementation internally uses the _id from the found device to update it
       // So we need to avoid the internal call to updateDevice which is failing in the test
       // by mocking the service method directly and restoring it after the test
-      const originalUpdateDevice = service.updateDevice;
+      const originalUpdateDevice = service.updateDevice
       service.updateDevice = jest.fn().mockResolvedValue({
         ...mockDevice,
         fcmToken: 'updatedToken',
-      });
+      })
 
       const result = await service.registerDevice(mockDeviceInput, mockUser)
 
@@ -203,9 +207,9 @@ describe('GatewayService', () => {
         }),
       )
       expect(result).toBeDefined()
-      
+
       // Restore the original method
-      service.updateDevice = originalUpdateDevice;
+      service.updateDevice = originalUpdateDevice
     })
 
     it('should create a new device if it does not exist', async () => {
@@ -231,16 +235,16 @@ describe('GatewayService', () => {
   })
 
   describe('getDevicesForUser', () => {
-    const mockUser = { 
-      _id: 'user123', 
-      name: 'Test User', 
+    const mockUser = {
+      _id: 'user123',
+      name: 'Test User',
       email: 'test@example.com',
       password: 'password',
       role: 'user',
       createdAt: new Date(),
-      updatedAt: new Date()
-    } as unknown as User;
-    
+      updatedAt: new Date(),
+    } as unknown as User
+
     const mockDevices = [
       { _id: 'device1', model: 'Pixel 6' },
       { _id: 'device2', model: 'iPhone 13' },
@@ -322,7 +326,9 @@ describe('GatewayService', () => {
 
       expect(mockDeviceModel.findById).toHaveBeenCalledWith(mockDeviceId)
       expect(mockDeviceTombstoneModel.updateOne).toHaveBeenCalled()
-      expect(mockDeviceModel.findByIdAndDelete).toHaveBeenCalledWith(mockDeviceId)
+      expect(mockDeviceModel.findByIdAndDelete).toHaveBeenCalledWith(
+        mockDeviceId,
+      )
       expect(result).toEqual({ success: true })
     })
 
@@ -383,9 +389,11 @@ describe('GatewayService', () => {
       }))
       mockBillingService.canPerformAction.mockResolvedValue(true)
       mockSmsQueueService.isQueueEnabled.mockReturnValue(false)
-      
+
       // Fix the mock
-      jest.spyOn(firebaseAdmin.messaging(), 'sendEach').mockResolvedValue(mockFcmResponse)
+      jest
+        .spyOn(firebaseAdmin.messaging(), 'sendEach')
+        .mockResolvedValue(mockFcmResponse)
     })
 
     it('should send SMS successfully', async () => {
@@ -409,16 +417,20 @@ describe('GatewayService', () => {
         enabled: false,
       })
 
-      await expect(
-        service.sendSMS(mockDeviceId, mockSmsInput),
-      ).rejects.toThrow(HttpException)
+      await expect(service.sendSMS(mockDeviceId, mockSmsInput)).rejects.toThrow(
+        HttpException,
+      )
       expect(mockDeviceModel.findById).toHaveBeenCalledWith(mockDeviceId)
       expect(mockBillingService.canPerformAction).not.toHaveBeenCalled()
     })
 
     it('should throw error if message is blank', async () => {
       await expect(
-        service.sendSMS(mockDeviceId, { ...mockSmsInput, message: '', smsBody: '' }),
+        service.sendSMS(mockDeviceId, {
+          ...mockSmsInput,
+          message: '',
+          smsBody: '',
+        }),
       ).rejects.toThrow(HttpException)
     })
 
@@ -442,12 +454,14 @@ describe('GatewayService', () => {
 
     it('should handle queue error properly', async () => {
       mockSmsQueueService.isQueueEnabled.mockReturnValue(true)
-      mockSmsQueueService.addSendSmsJob.mockRejectedValue(new Error('Queue error'))
+      mockSmsQueueService.addSendSmsJob.mockRejectedValue(
+        new Error('Queue error'),
+      )
 
-      await expect(
-        service.sendSMS(mockDeviceId, mockSmsInput),
-      ).rejects.toThrow(HttpException)
-      
+      await expect(service.sendSMS(mockDeviceId, mockSmsInput)).rejects.toThrow(
+        HttpException,
+      )
+
       expect(mockSmsBatchModel.findByIdAndUpdate).toHaveBeenCalled()
       expect(mockSmsModel.updateMany).toHaveBeenCalled()
     })
@@ -511,9 +525,11 @@ describe('GatewayService', () => {
       }))
       mockBillingService.canPerformAction.mockResolvedValue(true)
       mockSmsQueueService.isQueueEnabled.mockReturnValue(false)
-      
+
       // Fix the mock
-      jest.spyOn(firebaseAdmin.messaging(), 'sendEach').mockResolvedValue(mockFcmResponse)
+      jest
+        .spyOn(firebaseAdmin.messaging(), 'sendEach')
+        .mockResolvedValue(mockFcmResponse)
     })
 
     it('should send bulk SMS successfully', async () => {
@@ -602,7 +618,10 @@ describe('GatewayService', () => {
 
     it('should throw error if SMS data is invalid', async () => {
       await expect(
-        service.receiveSMS(mockDeviceId, { ...mockReceivedSmsData, message: '' }),
+        service.receiveSMS(mockDeviceId, {
+          ...mockReceivedSmsData,
+          message: '',
+        }),
       ).rejects.toThrow(HttpException)
     })
   })
@@ -772,16 +791,16 @@ describe('GatewayService', () => {
   })
 
   describe('getStatsForUser', () => {
-    const mockUser = { 
-      _id: 'user123', 
-      name: 'Test User', 
+    const mockUser = {
+      _id: 'user123',
+      name: 'Test User',
       email: 'test@example.com',
       password: 'password',
       role: 'user',
       createdAt: new Date(),
-      updatedAt: new Date()
-    } as unknown as User;
-    
+      updatedAt: new Date(),
+    } as unknown as User
+
     const mockDevices = [
       {
         _id: 'device1',

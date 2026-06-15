@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Device, DeviceDocument } from './schemas/device.schema'
 import { Model, Types } from 'mongoose'
 import * as firebaseAdmin from 'firebase-admin'
-import { DeviceTombstone, DeviceTombstoneDocument } from './schemas/device-tombstone.schema'
+import {
+  DeviceTombstone,
+  DeviceTombstoneDocument,
+} from './schemas/device-tombstone.schema'
 import {
   ReceivedSMSDTO,
   RegisterDeviceInputDTO,
@@ -56,12 +59,12 @@ export class GatewayService {
 
     const now = new Date()
     const deviceData: any = { ...input, user }
-    
+
     // Set default name to "brand model" if not provided
     if (!deviceData.name && input.brand && input.model) {
       deviceData.name = `${input.brand} ${input.model}`
     }
-    
+
     // Handle simInfo if provided
     if (input.simInfo) {
       deviceData.simInfo = {
@@ -110,12 +113,12 @@ export class GatewayService {
     }
 
     if (input.enabled !== false) {
-      input.enabled = true;
+      input.enabled = true
     }
 
     const now = new Date()
     const updateData: any = { ...input }
-    
+
     // Handle simInfo if provided
     if (input.simInfo) {
       updateData.simInfo = {
@@ -129,7 +132,7 @@ export class GatewayService {
       updateData.fcmTokenInvalidatedAt = undefined
       updateData.fcmTokenInvalidReason = undefined
     }
-    
+
     return await this.deviceModel.findByIdAndUpdate(
       deviceId,
       { $set: updateData },
@@ -166,20 +169,23 @@ export class GatewayService {
     return { success: true }
   }
 
-  private calculateDelayFromScheduledAt(scheduledAt?: string): number | undefined {
+  private calculateDelayFromScheduledAt(
+    scheduledAt?: string,
+  ): number | undefined {
     if (!scheduledAt) {
       return undefined
     }
 
     try {
       const scheduledDate = new Date(scheduledAt)
-      
+
       // Check if date is valid
       if (isNaN(scheduledDate.getTime())) {
         throw new HttpException(
           {
             success: false,
-            error: 'Invalid scheduledAt format. Must be a valid ISO 8601 date string.',
+            error:
+              'Invalid scheduledAt format. Must be a valid ISO 8601 date string.',
           },
           HttpStatus.BAD_REQUEST,
         )
@@ -208,7 +214,8 @@ export class GatewayService {
       throw new HttpException(
         {
           success: false,
-          error: 'Invalid scheduledAt format. Must be a valid ISO 8601 date string.',
+          error:
+            'Invalid scheduledAt format. Must be a valid ISO 8601 date string.',
         },
         HttpStatus.BAD_REQUEST,
       )
@@ -284,7 +291,7 @@ export class GatewayService {
         recipientPreview: this.getRecipientsPreview(recipients),
         status: 'pending',
       })
-    } catch (e) {
+    } catch (e: any) {
       throw new HttpException(
         {
           success: false,
@@ -298,7 +305,7 @@ export class GatewayService {
     const fcmMessages: Message[] = []
 
     for (let recipient of recipients) {
-      recipient = recipient.replace(/\s+/g, "")
+      recipient = recipient.replace(/\s+/g, '')
       const sms = await this.smsModel.create({
         user: device.user,
         device: device._id,
@@ -361,7 +368,7 @@ export class GatewayService {
           smsBatchId: smsBatch._id,
           recipientCount: recipients.length,
         }
-      } catch (e) {
+      } catch (e: any) {
         // Update batch status to failed
         await this.smsBatchModel.findByIdAndUpdate(smsBatch._id, {
           $set: { status: 'failed', error: e.message },
@@ -420,7 +427,7 @@ export class GatewayService {
         })
 
       return response
-    } catch (e) {
+    } catch (e: any) {
       this.smsBatchModel
         .findByIdAndUpdate(smsBatch._id, {
           $set: { status: 'failed', error: e.message },
@@ -501,7 +508,8 @@ export class GatewayService {
     })
 
     // Track FCM messages with their calculated delays for grouping
-    const fcmMessagesWithDelays: Array<{ message: Message; delayMs?: number }> = []
+    const fcmMessagesWithDelays: Array<{ message: Message; delayMs?: number }> =
+      []
     const smsDocumentsToInsert: Array<Record<string, any>> = []
     const smsToFcmMetadata: Array<{
       recipient: string
@@ -526,7 +534,7 @@ export class GatewayService {
       const delayMs = this.calculateDelayFromScheduledAt(smsData.scheduledAt)
 
       for (let recipient of recipients) {
-        recipient = recipient.replace(/\s+/g, "")
+        recipient = recipient.replace(/\s+/g, '')
         smsDocumentsToInsert.push({
           user: device.user,
           device: device._id,
@@ -553,11 +561,14 @@ export class GatewayService {
 
     const insertChunkSize = 500
     const insertedSmsDocs: any[] = []
-    const hasInsertMany = typeof (this.smsModel as any).insertMany === 'function'
+    const hasInsertMany =
+      typeof (this.smsModel as any).insertMany === 'function'
     for (let i = 0; i < smsDocumentsToInsert.length; i += insertChunkSize) {
       const chunk = smsDocumentsToInsert.slice(i, i + insertChunkSize)
       if (hasInsertMany) {
-        const insertedChunk = await (this.smsModel as any).insertMany(chunk, { ordered: true })
+        const insertedChunk = await (this.smsModel as any).insertMany(chunk, {
+          ordered: true,
+        })
         insertedSmsDocs.push(...insertedChunk)
         continue
       }
@@ -606,7 +617,10 @@ export class GatewayService {
           priority: 'high',
         },
       }
-      fcmMessagesWithDelays.push({ message: fcmMessage, delayMs: metadata.delayMs })
+      fcmMessagesWithDelays.push({
+        message: fcmMessage,
+        delayMs: metadata.delayMs,
+      })
     }
 
     // Check if we should use the queue
@@ -638,7 +652,7 @@ export class GatewayService {
           smsBatchId: smsBatch._id,
           recipientCount: messages.map((m) => m.recipients).flat().length,
         }
-      } catch (e) {
+      } catch (e: any) {
         // Update batch status to failed
         await this.smsBatchModel.findByIdAndUpdate(smsBatch._id, {
           $set: {
@@ -696,7 +710,7 @@ export class GatewayService {
           .catch((e) => {
             console.error('failed to update sms batch status to completed')
           })
-      } catch (e) {
+      } catch (e: any) {
         console.log('Failed to send SMS: FCM')
         console.log(e)
 
@@ -746,7 +760,9 @@ export class GatewayService {
       !dto.sender ||
       !dto.message
     ) {
-      console.error(`receiveSMS: Invalid received SMS data (sender: ${dto.sender}, message: ${dto.message}) (receivedAt: ${dto.receivedAt}, receivedAtInMillis: ${dto.receivedAtInMillis})`)
+      console.error(
+        `receiveSMS: Invalid received SMS data (sender: ${dto.sender}, message: ${dto.message}) (receivedAt: ${dto.receivedAt}, receivedAtInMillis: ${dto.receivedAtInMillis})`,
+      )
       throw new HttpException(
         {
           success: false,
@@ -943,10 +959,12 @@ export class GatewayService {
     }
   }
 
-  async updateSMSStatus(deviceId: string, dto: UpdateSMSStatusDTO): Promise<any> {
+  async updateSMSStatus(
+    deviceId: string,
+    dto: UpdateSMSStatusDTO,
+  ): Promise<any> {
+    const device = await this.deviceModel.findById(deviceId)
 
-    const device = await this.deviceModel.findById(deviceId);
-    
     if (!device) {
       throw new HttpException(
         {
@@ -954,11 +972,11 @@ export class GatewayService {
           error: 'Device not found',
         },
         HttpStatus.NOT_FOUND,
-      );
+      )
     }
-    
-    const sms = await this.smsModel.findById(dto.smsId);
-    
+
+    const sms = await this.smsModel.findById(dto.smsId)
+
     if (!sms) {
       throw new HttpException(
         {
@@ -966,9 +984,9 @@ export class GatewayService {
           error: 'SMS not found',
         },
         HttpStatus.NOT_FOUND,
-      );
+      )
     }
-    
+
     // Verify the SMS belongs to this device
     if (sms.device.toString() !== deviceId) {
       throw new HttpException(
@@ -977,84 +995,89 @@ export class GatewayService {
           error: 'SMS does not belong to this device',
         },
         HttpStatus.FORBIDDEN,
-      );
+      )
     }
-    
+
     // Normalize status to lowercase for comparison
-    const normalizedStatus = dto.status.toLowerCase();
-    
+    const normalizedStatus = dto.status.toLowerCase()
+
     const updateData: any = {
       status: normalizedStatus, // Store normalized status
-    };
-    
+    }
+
     // Update timestamps based on status
     if (normalizedStatus === 'sent' && dto.sentAtInMillis) {
-      updateData.sentAt = new Date(dto.sentAtInMillis);
+      updateData.sentAt = new Date(dto.sentAtInMillis)
     } else if (normalizedStatus === 'delivered' && dto.deliveredAtInMillis) {
-      updateData.deliveredAt = new Date(dto.deliveredAtInMillis);
+      updateData.deliveredAt = new Date(dto.deliveredAtInMillis)
     } else if (normalizedStatus === 'failed' && dto.failedAtInMillis) {
-      updateData.failedAt = new Date(dto.failedAtInMillis);
-      updateData.errorCode = dto.errorCode;
-      updateData.errorMessage = dto.errorMessage || 'Unknown error';
+      updateData.failedAt = new Date(dto.failedAtInMillis)
+      updateData.errorCode = dto.errorCode
+      updateData.errorMessage = dto.errorMessage || 'Unknown error'
     }
-    
+
     // Update the SMS
-const updatedSms = await this.smsModel.findByIdAndUpdate(
-  dto.smsId,
-  { $set: updateData },
-  { new: true } 
-);
-    
+    const updatedSms = await this.smsModel.findByIdAndUpdate(
+      dto.smsId,
+      { $set: updateData },
+      { new: true },
+    )
+
     // Check if all SMS in batch have the same status, then update batch status
     if (dto.smsBatchId) {
-      const smsBatch = await this.smsBatchModel.findById(dto.smsBatchId);
+      const smsBatch = await this.smsBatchModel.findById(dto.smsBatchId)
       if (smsBatch) {
-        const allSmsInBatch = await this.smsModel.find({ smsBatch: dto.smsBatchId });
-        
+        const allSmsInBatch = await this.smsModel.find({
+          smsBatch: dto.smsBatchId,
+        })
+
         // Check if all SMS in batch have the same status (case insensitive)
-        const allHaveSameStatus = allSmsInBatch.every(sms => sms.status.toLowerCase() === normalizedStatus);
-        
+        const allHaveSameStatus = allSmsInBatch.every(
+          (sms) => sms.status.toLowerCase() === normalizedStatus,
+        )
+
         if (allHaveSameStatus) {
-          const smsBatchStatus = normalizedStatus === 'failed' ? 'failed' : 'completed';
-          await this.smsBatchModel.findByIdAndUpdate(dto.smsBatchId, { 
-            $set: { status: smsBatchStatus } 
-          });
+          const smsBatchStatus =
+            normalizedStatus === 'failed' ? 'failed' : 'completed'
+          await this.smsBatchModel.findByIdAndUpdate(dto.smsBatchId, {
+            $set: { status: smsBatchStatus },
+          })
         }
       }
     }
-    
+
     // Trigger webhook event for SMS status update
     try {
-       let event: WebhookEvent
-       switch (normalizedStatus) {
-          case 'sent':
-            event = WebhookEvent.MESSAGE_SENT
-            break
-          case 'delivered':
-            event = WebhookEvent.MESSAGE_DELIVERED
-            break
-          case 'failed':
-            event = WebhookEvent.MESSAGE_FAILED
-            break
-          case 'received':
-            event = WebhookEvent.MESSAGE_RECEIVED
-            break
-          default:
-            event = WebhookEvent.UNKNOWN_STATE
-          }
+      let event: WebhookEvent
+      switch (normalizedStatus) {
+        case 'sent':
+          event = WebhookEvent.MESSAGE_SENT
+          break
+        case 'delivered':
+          event = WebhookEvent.MESSAGE_DELIVERED
+          break
+        case 'failed':
+          event = WebhookEvent.MESSAGE_FAILED
+          break
+        case 'received':
+          event = WebhookEvent.MESSAGE_RECEIVED
+          break
+        default:
+          event = WebhookEvent.UNKNOWN_STATE
+      }
       this.webhookService.deliverNotification({
         sms: updatedSms,
         user: device.user,
         event,
-      });
+      })
     } catch (error) {
-      console.error('Failed to trigger webhook event:', error);
+      console.error('Failed to trigger webhook event:', error)
     }
-    
+
     return {
       success: true,
       message: 'SMS status updated successfully',
-    };
+    }
   }
 
   async getStatsForUser(user: User) {
@@ -1097,8 +1120,7 @@ const updatedSms = await this.smsModel.findByIdAndUpdate(
   }
 
   async getSMSById(smsId: string): Promise<any> {
-
-    const sms = await this.smsModel.findById(smsId);
+    const sms = await this.smsModel.findById(smsId)
 
     if (!sms) {
       throw new HttpException(
@@ -1107,15 +1129,14 @@ const updatedSms = await this.smsModel.findByIdAndUpdate(
           error: 'SMS not found',
         },
         HttpStatus.NOT_FOUND,
-      );
+      )
     }
 
-    return sms;
+    return sms
   }
 
   async getSmsBatchById(smsBatchId: string): Promise<any> {
-
-    const smsBatch = await this.smsBatchModel.findById(smsBatchId);
+    const smsBatch = await this.smsBatchModel.findById(smsBatchId)
 
     if (!smsBatch) {
       throw new HttpException(
@@ -1124,20 +1145,20 @@ const updatedSms = await this.smsModel.findByIdAndUpdate(
           error: 'SMS batch not found',
         },
         HttpStatus.NOT_FOUND,
-      );
+      )
     }
 
     // Find all SMS messages that belong to this batch
-    const smsMessages = await this.smsModel.find({ 
+    const smsMessages = await this.smsModel.find({
       smsBatch: new Types.ObjectId(smsBatchId),
-      device: smsBatch.device
-    });
+      device: smsBatch.device,
+    })
 
     // Return both the batch and its SMS messages
     return {
       batch: smsBatch,
-      messages: smsMessages
-    };
+      messages: smsMessages,
+    }
   }
 
   async heartbeat(
@@ -1190,7 +1211,10 @@ const updatedSms = await this.smsModel.findByIdAndUpdate(
     }
 
     // Update batteryInfo if provided
-    if (input.batteryPercentage !== undefined || input.isCharging !== undefined) {
+    if (
+      input.batteryPercentage !== undefined ||
+      input.isCharging !== undefined
+    ) {
       if (input.batteryPercentage !== undefined) {
         updateData['batteryInfo.percentage'] = input.batteryPercentage
       }
@@ -1207,7 +1231,10 @@ const updatedSms = await this.smsModel.findByIdAndUpdate(
     }
 
     // Update appVersionInfo if provided
-    if (input.appVersionName !== undefined || input.appVersionCode !== undefined) {
+    if (
+      input.appVersionName !== undefined ||
+      input.appVersionCode !== undefined
+    ) {
       if (input.appVersionName !== undefined) {
         updateData['appVersionInfo.versionName'] = input.appVersionName
       }

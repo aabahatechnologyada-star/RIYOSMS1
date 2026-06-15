@@ -1,7 +1,10 @@
 import { forwardRef, Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Device, DeviceSchema } from './schemas/device.schema'
-import { DeviceTombstone, DeviceTombstoneSchema } from './schemas/device-tombstone.schema'
+import {
+  DeviceTombstone,
+  DeviceTombstoneSchema,
+} from './schemas/device-tombstone.schema'
 import { GatewayController } from './gateway.controller'
 import { GatewayService } from './gateway.service'
 import { AuthModule } from '../auth/auth.module'
@@ -44,7 +47,10 @@ import { HeartbeatCheckTask } from './tasks/heartbeat-check.task'
       useFactory: async (configService: ConfigService) => ({
         limiter: {
           max: configService.get<number>('SMS_QUEUE_LIMITER_MAX', 20),
-          duration: configService.get<number>('SMS_QUEUE_LIMITER_DURATION_MS', 1000),
+          duration: configService.get<number>(
+            'SMS_QUEUE_LIMITER_DURATION_MS',
+            1000,
+          ),
         },
         defaultJobOptions: {
           attempts: 2,
@@ -64,7 +70,13 @@ import { HeartbeatCheckTask } from './tasks/heartbeat-check.task'
     ConfigModule,
   ],
   controllers: [GatewayController],
-  providers: [GatewayService, SmsQueueService, SmsQueueProcessor, SmsStatusUpdateTask, HeartbeatCheckTask],
+  providers: [
+    GatewayService,
+    SmsQueueService,
+    SmsQueueProcessor,
+    SmsStatusUpdateTask,
+    HeartbeatCheckTask,
+  ],
   exports: [MongooseModule, GatewayService, SmsQueueService],
 })
 export class GatewayModule {}

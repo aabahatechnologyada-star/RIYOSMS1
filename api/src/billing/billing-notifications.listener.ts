@@ -45,7 +45,9 @@ export class BillingNotificationsListener {
     const ctaUrl = isEmailVerification
       ? `${ctaUrlBase}/dashboard/account`
       : 'https://riyosms.com/#pricing'
-    const ctaLabel = isEmailVerification ? 'Verify your email' : 'View plans & pricing'
+    const ctaLabel = isEmailVerification
+      ? 'Verify your email'
+      : 'View plans & pricing'
 
     await this.mailService.sendEmailFromTemplate({
       to: user.email,

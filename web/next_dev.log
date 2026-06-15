@@ -2,6 +2,111 @@
 > riyosms.com@2.0.0 dev /app/web
 > next dev
 
-sh: 1: next: not found
- ELIFECYCLE  Command failed.
- WARN   Local package.json exists, but node_modules missing, did you mean to install?
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 2.8s
+
+○ Compiling /login ...
+[next-auth][warn][NEXTAUTH_URL]
+https://next-auth.js.org/warnings#nextauth_url
+[next-auth][warn][NO_SECRET]
+https://next-auth.js.org/warnings#no_secret
+ GET /login 200 in 14.1s (next.js: 12.3s, proxy.ts: 571ms, application-code: 1289ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/login" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html
+                          lang="en"
+-                         className="light"
+-                         style={{color-scheme:"light"}}
+                        >
+                  ...
+
+[browser] [GSI_LOGGER]: Provided button width is invalid: 100% (https://accounts.google.com/gsi/client:87:460)
+[browser] [GSI_LOGGER]: Missing required parameter: client_id.
+    at _.H (https://accounts.google.com/gsi/client:88:89)
+    at Tu (https://accounts.google.com/gsi/client:353:361)
+    at _.Hu.va (https://accounts.google.com/gsi/client:347:146)
+    at Ss.va (https://accounts.google.com/gsi/client:389:309)
+    at Object.Xs [as prompt] (https://accounts.google.com/gsi/client:297:64) (https://accounts.google.com/gsi/client:88:89)
+ GET /register 200 in 1649ms (next.js: 1393ms, proxy.ts: 35ms, application-code: 221ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/register" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html
+                          lang="en"
+-                         className="light"
+-                         style={{color-scheme:"light"}}
+                        >
+                  ...
+
+[browser] [GSI_LOGGER]: Provided button width is invalid: 100% (https://accounts.google.com/gsi/client:87:460)
+[browser] [GSI_LOGGER]: Missing required parameter: client_id.
+    at _.H (https://accounts.google.com/gsi/client:88:89)
+    at Tu (https://accounts.google.com/gsi/client:353:361)
+    at _.Hu.va (https://accounts.google.com/gsi/client:347:146)
+    at Ss.va (https://accounts.google.com/gsi/client:389:309)
+    at Object.Xs [as prompt] (https://accounts.google.com/gsi/client:297:64) (https://accounts.google.com/gsi/client:88:89)
+ GET /download 200 in 1048ms (next.js: 843ms, proxy.ts: 9ms, application-code: 197ms)
+[browser] Error: Failed to fetch releases
+    at fetchReleases (app/download/page.tsx:56:17)
+  54 |         )
+  55 |         if (!response.ok) {
+> 56 |           throw new Error('Failed to fetch releases')
+     |                 ^
+  57 |         }
+  58 |         const data = await response.json()
+  59 |         setReleases(data) (app/download/page.tsx:62:17)
