@@ -45,7 +45,7 @@ export class User {
   accountDeletionReason: string
 
   @Prop({ type: Object })
-  meta: Object
+  meta: object
 
   @Prop({
     type: {

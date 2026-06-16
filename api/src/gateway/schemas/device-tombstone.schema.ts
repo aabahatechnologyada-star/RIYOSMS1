@@ -22,4 +22,3 @@ export const DeviceTombstoneSchema =
   SchemaFactory.createForClass(DeviceTombstone)
 
 DeviceTombstoneSchema.index({ userId: 1, deletedAt: -1 })
-

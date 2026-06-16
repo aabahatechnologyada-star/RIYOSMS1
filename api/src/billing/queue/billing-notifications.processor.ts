@@ -20,16 +20,18 @@ export class BillingNotificationsProcessor {
   ) {}
 
   @Process({ name: 'send', concurrency: 1 })
-  async handleSend(job: Job<{
-    notificationId: Types.ObjectId
-    userId: Types.ObjectId
-    type: string
-    title: string
-    message: string
-    meta: Record<string, any>
-    createdAt: Date
-    sendEmail?: boolean
-  }>) {
+  async handleSend(
+    job: Job<{
+      notificationId: Types.ObjectId
+      userId: Types.ObjectId
+      type: string
+      title: string
+      message: string
+      meta: Record<string, any>
+      createdAt: Date
+      sendEmail?: boolean
+    }>,
+  ) {
     const payload = job.data
     if (!payload?.sendEmail) {
       return
@@ -55,7 +57,9 @@ export class BillingNotificationsProcessor {
     const ctaUrl = isEmailVerification
       ? `${ctaUrlBase}/dashboard/account`
       : 'https://riyosms.com/#pricing'
-    const ctaLabel = isEmailVerification ? 'Verify your email' : 'View plans & pricing'
+    const ctaLabel = isEmailVerification
+      ? 'Verify your email'
+      : 'View plans & pricing'
 
     await this.mailService.sendEmailFromTemplate({
       to: user.email,
@@ -110,5 +114,3 @@ export class BillingNotificationsProcessor {
     }
   }
 }
-
-

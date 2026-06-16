@@ -161,13 +161,13 @@ export class AuthService {
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
     const resetCount = await this.passwordResetModel.countDocuments({
       user: user._id,
-      createdAt: { $gte: twentyFourHoursAgo }
+      createdAt: { $gte: twentyFourHoursAgo },
     })
 
     if (resetCount >= 5) {
       throw new HttpException(
         { error: 'Too many password reset requests. Please try again later.' },
-        HttpStatus.TOO_MANY_REQUESTS
+        HttpStatus.TOO_MANY_REQUESTS,
       )
     }
 
@@ -263,13 +263,16 @@ export class AuthService {
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
     const verificationCount = await this.emailVerificationModel.countDocuments({
       user: user._id,
-      createdAt: { $gte: twentyFourHoursAgo }
+      createdAt: { $gte: twentyFourHoursAgo },
     })
 
     if (verificationCount >= 5) {
       throw new HttpException(
-        { error: 'Too many email verification requests. Please try again later.' },
-        HttpStatus.TOO_MANY_REQUESTS
+        {
+          error:
+            'Too many email verification requests. Please try again later.',
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
       )
     }
 
@@ -348,10 +351,7 @@ export class AuthService {
     return { apiKey, message: 'Save this key, it wont be shown again ;)' }
   }
 
-  async getUserApiKeys(
-    currentUser: User,
-    statusParam?: string,
-  ) {
+  async getUserApiKeys(currentUser: User, statusParam?: string) {
     const normalized =
       statusParam === undefined || statusParam === '' ? 'active' : statusParam
     if (!['active', 'revoked', 'all'].includes(normalized)) {

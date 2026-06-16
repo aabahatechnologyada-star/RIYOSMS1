@@ -56,7 +56,7 @@ export class SMS {
 
   @Prop({ type: Date })
   failedAt: Date
-  
+
   @Prop({ type: String, required: false })
   errorCode: string
 
@@ -85,7 +85,6 @@ export class SMS {
 }
 
 export const SMSSchema = SchemaFactory.createForClass(SMS)
-
 
 SMSSchema.index({ device: 1, type: 1, receivedAt: -1 })
 SMSSchema.index({ user: 1, createdAt: -1, type: 1 })

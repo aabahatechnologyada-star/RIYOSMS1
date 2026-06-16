@@ -30,7 +30,7 @@ const registerSchema = z.object({
     .string()
     .min(8, { message: 'Password must be at least 8 characters long' }),
   phone: z.string().optional(),
-  marketingOptIn: z.boolean().optional().default(true),
+  marketingOptIn: z.boolean(),
   turnstileToken: z
     .string()
     .min(1, { message: 'Please complete the bot verification' }),

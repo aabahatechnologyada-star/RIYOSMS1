@@ -20,7 +20,12 @@ export class BillingNotification {
   @Prop({ type: Types.ObjectId, ref: User.name, required: true, index: true })
   user: User | Types.ObjectId
 
-  @Prop({ type: String, enum: Object.values(BillingNotificationType), required: true, index: true })
+  @Prop({
+    type: String,
+    enum: Object.values(BillingNotificationType),
+    required: true,
+    index: true,
+  })
   type: BillingNotificationType
 
   @Prop({ type: String, required: true })
@@ -54,5 +59,3 @@ export class BillingNotification {
 
 export const BillingNotificationSchema =
   SchemaFactory.createForClass(BillingNotification)
-
-

@@ -10,10 +10,19 @@ import { AuthModule } from 'src/auth/auth.module'
 import { UsersModule } from 'src/users/users.module'
 import { GatewayModule } from 'src/gateway/gateway.module'
 import { MailModule } from 'src/mail/mail.module'
-import { PolarWebhookPayload, PolarWebhookPayloadSchema } from './schemas/polar-webhook-payload.schema'
+import {
+  PolarWebhookPayload,
+  PolarWebhookPayloadSchema,
+} from './schemas/polar-webhook-payload.schema'
 import { Device, DeviceSchema } from '../gateway/schemas/device.schema'
-import { CheckoutSession, CheckoutSessionSchema } from './schemas/checkout-session.schema'
-import { BillingNotification, BillingNotificationSchema } from './schemas/billing-notification.schema'
+import {
+  CheckoutSession,
+  CheckoutSessionSchema,
+} from './schemas/checkout-session.schema'
+import {
+  BillingNotification,
+  BillingNotificationSchema,
+} from './schemas/billing-notification.schema'
 import { BillingNotificationsService } from './billing-notifications.service'
 // import { BillingNotificationsListener } from './billing-notifications.listener'
 import { BullModule } from '@nestjs/bull'
@@ -47,7 +56,11 @@ import { BillingNotificationsProcessor } from 'src/billing/queue/billing-notific
     MailModule,
   ],
   controllers: [BillingController],
-  providers: [BillingService, BillingNotificationsService, BillingNotificationsProcessor],
+  providers: [
+    BillingService,
+    BillingNotificationsService,
+    BillingNotificationsProcessor,
+  ],
   exports: [BillingService, BillingNotificationsService],
 })
 export class BillingModule {}

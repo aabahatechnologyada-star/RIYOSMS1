@@ -10,7 +10,10 @@ import { UsersModule } from 'src/users/users.module'
 import { BillingModule } from 'src/billing/billing.module'
 import { MailModule } from 'src/mail/mail.module'
 import { AuthModule } from 'src/auth/auth.module'
-import { Subscription, SubscriptionSchema } from 'src/billing/schemas/subscription.schema'
+import {
+  Subscription,
+  SubscriptionSchema,
+} from 'src/billing/schemas/subscription.schema'
 import { CommonModule } from '../common/common.module'
 @Module({
   imports: [

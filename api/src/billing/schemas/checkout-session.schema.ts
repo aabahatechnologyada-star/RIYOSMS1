@@ -33,4 +33,5 @@ export class CheckoutSession {
   completedAt?: Date
 }
 
-export const CheckoutSessionSchema = SchemaFactory.createForClass(CheckoutSession)
+export const CheckoutSessionSchema =
+  SchemaFactory.createForClass(CheckoutSession)

@@ -10,9 +10,7 @@ import {
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async findOne(params) {
     return await this.userModel.findOne(params)
@@ -119,5 +117,4 @@ export class UsersService {
     u.markModified('onboarding')
     return await u.save()
   }
-
 }

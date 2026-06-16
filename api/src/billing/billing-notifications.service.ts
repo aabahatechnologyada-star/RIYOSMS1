@@ -27,7 +27,14 @@ export class BillingNotificationsService {
     @InjectQueue('billing-notifications') private readonly billingQueue: Queue,
   ) {}
 
-  async notifyOnce({ userId, type, title, message, meta = {}, sendEmail = true }: NotifyOnceInput) {
+  async notifyOnce({
+    userId,
+    type,
+    title,
+    message,
+    meta = {},
+    sendEmail = true,
+  }: NotifyOnceInput) {
     const windowMs = this.getDedupeWindowMs(type)
     const existing = await this.notificationModel.findOne({
       user: new Types.ObjectId(userId),
@@ -43,7 +50,10 @@ export class BillingNotificationsService {
 
     const updated = await this.notificationModel.findOneAndUpdate(
       { user: new Types.ObjectId(userId), type },
-      { $set: { title, message, meta }, $setOnInsert: { user: new Types.ObjectId(userId), type } },
+      {
+        $set: { title, message, meta },
+        $setOnInsert: { user: new Types.ObjectId(userId), type },
+      },
       { upsert: true, new: true, setDefaultsOnInsert: true },
     )
 
@@ -92,9 +102,6 @@ export class BillingNotificationsService {
   }
 
   // upsert-based single-document per user+type; dedupe controlled by window
-
 }
 
 export { BillingNotificationType }
-
-

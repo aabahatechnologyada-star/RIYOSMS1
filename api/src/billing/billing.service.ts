@@ -262,7 +262,7 @@ export class BillingService {
     })
 
     const currentSubscription = await this.getCurrentSubscription(user)
-    if ((currentSubscription?.plan as Plan)?.name ===  payload.planName) {
+    if ((currentSubscription?.plan as Plan)?.name === payload.planName) {
       throw new BadRequestException({
         message: `You are already on ${payload.planName} plan, please contact billing@riyosms.com to get a custom plan`,
         code: 'ALREADY_ON_PLAN',
@@ -300,7 +300,7 @@ export class BillingService {
       }
 
       try {
-        let discount = null;
+        let discount = null
         if (discountId) {
           discount = await this.polarApi.discounts.get({
             id: discountId,

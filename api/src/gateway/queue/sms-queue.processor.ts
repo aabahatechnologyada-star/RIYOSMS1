@@ -10,19 +10,17 @@ import { WebhookService } from 'src/webhook/webhook.service'
 import { WebhookEvent } from 'src/webhook/webhook-event.enum'
 import { Logger } from '@nestjs/common'
 
-function getFcmErrorCode(error: { code?: string; message?: string } | null): string {
+function getFcmErrorCode(
+  error: { code?: string; message?: string } | null,
+): string {
   if (!error?.code) return 'FCM_DELIVERY_FAILED'
-  const code = String(error.code).toLowerCase().replace(/^messaging\//, '')
-  if (
-    code === 'registration-token-not-registered' ||
-    code === 'unregistered'
-  ) {
+  const code = String(error.code)
+    .toLowerCase()
+    .replace(/^messaging\//, '')
+  if (code === 'registration-token-not-registered' || code === 'unregistered') {
     return 'FCM_TOKEN_NOT_REGISTERED'
   }
-  if (
-    code === 'invalid-registration-token' ||
-    code === 'invalid-argument'
-  ) {
+  if (code === 'invalid-registration-token' || code === 'invalid-argument') {
     return 'FCM_INVALID_REGISTRATION_TOKEN'
   }
   if (code === 'mismatched-credential') {
@@ -34,7 +32,9 @@ function getFcmErrorCode(error: { code?: string; message?: string } | null): str
 const FCM_ACTIONABLE_MESSAGE =
   'The device token is invalid. Please open the riyosms mobile app, click on the update button to resync and try again.'
 
-function getFcmErrorMessage(error: { code?: string; message?: string } | null | undefined): string {
+function getFcmErrorMessage(
+  error: { code?: string; message?: string } | null | undefined,
+): string {
   const rawPart = `FCM_DELIVERY_FAILED: ${error?.message || 'FCM delivery failed'}`
   return `${rawPart} — ${FCM_ACTIONABLE_MESSAGE}`
 }
