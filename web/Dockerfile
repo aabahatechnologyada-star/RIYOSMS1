@@ -2,32 +2,23 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
 
-# Install pnpm
 RUN npm install -g pnpm@9
 
-# Copy package.json
 COPY package.json ./
-
-# TIRIRTIR lockfile-ka hore si looga fogaado version-ka duugoobay
-# Kadib ku rakib dhammaan packages-ka (lockfile cusub ayaa la samayn)
 RUN rm -f pnpm-lock.yaml && pnpm install
 
 # Stage 2: Builder
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Install pnpm
 RUN npm install -g pnpm@9
 
-# Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/pnpm-lock.yaml ./pnpm-lock.yaml
-
-# Copy all files
 COPY . .
 
-# Force upgrade next to secure version if needed
-RUN pnpm add next@^14.2.35
+# Force Tailwind v3 (maxaa yeelay v4 waa la jabin)
+RUN pnpm add -D tailwindcss@^3 postcss autoprefixer
 
 # Build
 RUN pnpm build
