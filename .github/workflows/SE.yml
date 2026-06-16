@@ -1,0 +1,35 @@
+name: Fix Security Vulnerabilities
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          
+      - name: Upgrade next to secure version
+        run: |
+          rm -f pnpm-lock.yaml
+          pnpm add next@^14.2.35 --save-exact
+          pnpm install
+          
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add package.json pnpm-lock.yaml
+          git commit -m "fix: upgrade next to 14.2.35 (security)" || echo "No changes to commit"
+          git push
