@@ -48,7 +48,7 @@ const formSchema = z.object({
     .optional(),
   deliveryUrl: z.string().url({ message: 'Please enter a valid URL' }),
   events: z.array(z.string()).min(1, { message: 'Select at least one event' }),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean(),
   signingSecret: z.string().min(1, { message: 'Signing secret is required' }),
 })
 
