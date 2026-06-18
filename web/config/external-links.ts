@@ -1,5 +1,5 @@
 const POLAR_CUSTOMER_PORTAL_REQUEST_BASE =
-  'https://polar.sh/textbee/portal/request'
+  'https://polar.sh/riyosms/portal/request'
 
 export function polarCustomerPortalRequestUrl(
   email?: string | null
@@ -10,10 +10,10 @@ export function polarCustomerPortalRequestUrl(
 }
 
 export const ExternalLinks = {
-  patreon: 'https://patreon.com/vernu',
-  github: 'https://github.com/vernu/textbee',
+  patreon: 'https://riyosms.com',
+  github: 'https://github.com/riyosms/riyosms',
   discord: 'https://discord.gg/d7vyfBpWbQ',
-  polar: 'https://donate.textbee.dev',
-  twitter: 'https://x.com/textbeedotdev',
-  linkedin: 'https://www.linkedin.com/company/textbeedotdev',
+  polar: 'https://donate.riyosms.com',
+  twitter: 'https://x.com/riyosmsdotdev',
+  linkedin: 'https://www.linkedin.com/company/riyosmsdotdev',
 }

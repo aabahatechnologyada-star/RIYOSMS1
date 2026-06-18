@@ -48,19 +48,19 @@ android {
     productFlavors {
         dev {
             dimension "environment"
-            applicationId "com.vernu.sms.dev"
+            applicationId "com.riyosms.com"
             versionNameSuffix "-dev"
-            buildConfigField "String", "API_BASE_URL", '"https://api.dev.textbee.dev/api/v1/"'
+            buildConfigField "String", "API_BASE_URL", '"https://riyosms1.onrender.com/api/v1/"'
             buildConfigField "String", "ENVIRONMENT", '"development"'
-            resValue "string", "app_name", "textbee.dev (Dev)"
+            resValue "string", "app_name", "riyosms (Dev)"
         }
         
         prod {
             dimension "environment"
-            applicationId "com.vernu.sms"
-            buildConfigField "String", "API_BASE_URL", '"https://api.textbee.dev/api/v1/"'
+            applicationId "com.riyosms.com"
+            buildConfigField "String", "API_BASE_URL", '"https://riyosms1.onrender.com/api/v1/"'
             buildConfigField "String", "ENVIRONMENT", '"production"'
-            resValue "string", "app_name", "textbee.dev"
+            resValue "string", "app_name", "riyosms"
         }
     }
 

@@ -154,15 +154,15 @@ export default function AppHeader({ session }: { session: Session }) {
           >
             <Image
               src='/images/logo.png'
-              alt='textbee Logo'
+              alt='riyosms Logo'
               width={24}
               height={24}
               className='h-6 w-6 bg-white rounded-full'
             />
             <span className='font-bold'>
-              text<span className='text-primary'>bee</span>
+              riyo<span className='text-primary'>sms</span>
               <span className='text-xs align-center text-gray-500 dark:text-gray-400'>
-                .dev
+                .com
               </span>
             </span>
           </Link>

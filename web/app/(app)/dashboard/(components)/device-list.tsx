@@ -292,7 +292,7 @@ export default function DeviceList() {
           </DialogHeader>
           <ol className='list-decimal space-y-3 pl-5 text-left text-sm text-muted-foreground'>
             <li>
-              Download textbee app from{' '}
+              Download riyosms app from{' '}
               <a
                 href={Routes.downloadAndroidApp}
                 target='_blank'
@@ -309,7 +309,7 @@ export default function DeviceList() {
               app instead
             </li>
             <li>
-              Open the textbee.dev app and scan the QR code or paste the key manually. Your device should appear in the list when the link succeeds.
+              Open the riyosms.com app and scan the QR code or paste the key manually. Your device should appear in the list when the link succeeds.
             </li>
           </ol>
           <DialogFooter className='flex-col gap-2 sm:flex-row sm:justify-between'>
