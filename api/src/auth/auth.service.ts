@@ -142,7 +142,6 @@ export class AuthService {
 
   async requestResetPassword({
     email,
-    turnstileToken,
   }: RequestResetPasswordInputDTO) {
 
     const user = await this.usersService.findOne({ email })

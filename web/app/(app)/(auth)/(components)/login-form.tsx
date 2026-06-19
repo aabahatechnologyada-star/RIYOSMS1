@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -37,18 +36,8 @@ export default function LoginForm() {
     },
   })
 
-  ,
-    onError: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-    onExpire: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-  })
-
-
-
   const onSubmit = async (data: LoginFormValues) => {
     form.clearErrors()
-
 
     try {
       const result = await signIn('email-password-login', {
@@ -110,7 +99,7 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-                {form.formState.errors.root && (
+        {form.formState.errors.root && (
           <p className='text-sm font-medium text-red-500'>
             {form.formState.errors.root.message}
           </p>
@@ -122,7 +111,6 @@ export default function LoginForm() {
         >
           {form.formState.isSubmitting ? (
             <>
-              {/* <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> */}
               Signing in...
             </>
           ) : (

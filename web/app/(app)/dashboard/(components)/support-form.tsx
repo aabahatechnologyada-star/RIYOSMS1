@@ -19,14 +19,13 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { AlertTriangle, Check, Loader2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from '@/hooks/use-toast'
 import httpBrowserClient from '@/lib/httpBrowserClient'
 import { ApiEndpoints } from '@/config/api'
-import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
 const SupportFormSchema = z.object({
@@ -43,24 +42,25 @@ export default function SupportForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const router = useRouter()
 
-  ,
-    onError: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-    onExpire: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
+  const { data: session } = useSession()
+
+  const form = useForm({
+    resolver: zodResolver(SupportFormSchema),
+    defaultValues: {
+      name: session?.user?.name || '',
+      email: session?.user?.email || '',
+      phone: session?.user?.phone || '',
+      category: 'general' as any,
+      message: '',
+    },
   })
-
-
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true)
     setErrorMessage(null)
 
-
     try {
-      // Use the existing httpBrowserClient to call the NestJS endpoint
       const response = await httpBrowserClient.post(
         ApiEndpoints.support.customerSupport(),
         data
@@ -182,7 +182,7 @@ export default function SupportForm() {
             </FormItem>
           )}
         />
-                {isSubmitSuccessful && (
+        {isSubmitSuccessful && (
           <div className='flex items-center gap-2 text-green-500'>
             <Check className='h-4 w-4' /> We have received your message, we will
             get back to you soon.

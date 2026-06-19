@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -48,18 +47,8 @@ export default function RegisterForm() {
     },
   })
 
-  ,
-    onError: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-    onExpire: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-  })
-
-
-
   const onSubmit = async (data: RegisterFormValues) => {
     form.clearErrors()
-
 
     try {
       const result = await signIn('email-password-register', {
@@ -144,7 +133,7 @@ export default function RegisterForm() {
             </FormItem>
           )}
         />
-                {form.formState.errors.root && (
+        {form.formState.errors.root && (
           <p className='text-sm font-medium text-red-500'>
             {form.formState.errors.root.message}
           </p>
@@ -177,7 +166,6 @@ export default function RegisterForm() {
         >
           {form.formState.isSubmitting ? (
             <>
-              {/* <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> */}
               Creating account...
             </>
           ) : (

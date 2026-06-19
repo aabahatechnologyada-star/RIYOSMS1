@@ -1,21 +1,11 @@
 'use client'
 
-import Link from 'next/link'
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-// import { Icons } from "@/components/ui/icons"
 import {
   Form,
   FormControl,
@@ -24,123 +14,99 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-
+import { toast } from '@/hooks/use-toast'
 import httpBrowserClient from '@/lib/httpBrowserClient'
 import { ApiEndpoints } from '@/config/api'
-import { Routes } from '@/config/routes'
+import { AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
-const requestPasswordResetSchema = z.object({
+const requestResetSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
 })
 
-type RequestPasswordResetFormValues = z.infer<typeof requestPasswordResetSchema>
+type RequestResetValues = z.infer<typeof requestResetSchema>
 
 export default function RequestPasswordResetForm() {
-  const form = useForm<RequestPasswordResetFormValues>({
-    resolver: zodResolver(requestPasswordResetSchema),
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const form = useForm<RequestResetValues>({
+    resolver: zodResolver(requestResetSchema),
     defaultValues: {
       email: '',
     },
   })
 
-  ,
-    onError: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-    onExpire: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-  })
-
-
-
-  const onRequestPasswordReset = async (
-    data: RequestPasswordResetFormValues
-  ) => {
-    form.clearErrors()
-
+  const onSubmit = async (data: RequestResetValues) => {
+    setIsSubmitting(true)
+    setError(null)
 
     try {
-      await httpBrowserClient.post(
-        ApiEndpoints.auth.requestPasswordReset(),
-        data
-      )
-    } catch (error) {
-      form.setError('email', { message: 'Invalid email address' })
+      await httpBrowserClient.post(ApiEndpoints.auth.requestPasswordReset(), {
+        email: data.email,
+      })
+      setIsSubmitted(true)
+      toast({
+        title: 'Reset link sent',
+        description: 'If an account exists with this email, you will receive a reset link.',
+      })
+    } catch (err: any) {
+      console.error('request reset error:', err)
+      setError(err.response?.data?.message || 'An unexpected error occurred. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
+  if (isSubmitted) {
+    return (
+      <Alert className='bg-green-50 border-green-200 dark:bg-green-900/10 dark:border-green-900/20'>
+        <CheckCircle2 className='h-4 w-4 text-green-600 dark:text-green-400' />
+        <AlertTitle className='text-green-800 dark:text-green-300'>Check your email</AlertTitle>
+        <AlertDescription className='text-green-700 dark:text-green-400'>
+          We have sent a password reset link to <strong>{form.getValues('email')}</strong>.
+          Please check your inbox and follow the instructions.
+        </AlertDescription>
+      </Alert>
+    )
+  }
+
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gray-100 dark:bg-muted'>
-      <Card className='w-[400px] shadow-lg'>
-        <CardHeader className='space-y-1'>
-          <CardTitle className='text-2xl font-bold text-center'>
-            Reset your password
-          </CardTitle>
-          <CardDescription className='text-center'>
-            Enter your email address and we&apos;ll send you a link to reset
-            your password
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {!form.formState.isSubmitted ? (
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onRequestPasswordReset)}
-                className='space-y-4'
-              >
-                <FormField
-                  control={form.control}
-                  name='email'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder='m@example.com' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+        {error && (
+          <Alert variant='destructive'>
+            <AlertCircle className='h-4 w-4' />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        <FormField
+          control={form.control}
+          name='email'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email Address</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder='name@example.com'
+                  {...field}
+                  className='dark:text-white dark:bg-gray-800'
                 />
-                                <Button
-                  className='w-full'
-                  type='submit'
-                  disabled={form.formState.isSubmitting}
-                >
-                  {form.formState.isSubmitting ? (
-                    <>
-                      {/* <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> */}
-                      Sending reset link...
-                    </>
-                  ) : (
-                    'Send reset link'
-                  )}
-                </Button>
-              </form>
-            </Form>
-          ) : (
-            <Alert>
-              {/* <Icons.checkCircle className="h-4 w-4" /> */}
-              <AlertTitle>Check your email</AlertTitle>
-              <AlertDescription>
-                If an account exists for {form.getValues().email}, you will
-                receive a password reset link shortly.
-              </AlertDescription>
-              <AlertDescription className='mt-4 text-sm text-muted-foreground italic'>
-                If you don&apos;t receive an email, please check your spam
-                folder or contact support.
-              </AlertDescription>
-            </Alert>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </CardContent>
-        <CardFooter className='text-center'>
-          <Link
-            href={Routes.login}
-            className='text-sm text-brand-600 hover:underline'
-          >
-            Back to login
-          </Link>
-        </CardFooter>
-      </Card>
-    </div>
+        />
+        <Button
+          className='w-full'
+          type='submit'
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Sending Link...' : 'Send Reset Link'}
+        </Button>
+      </form>
+    </Form>
   )
 }
