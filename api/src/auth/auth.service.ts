@@ -13,7 +13,6 @@ import {
   PasswordResetDocument,
 } from './schemas/password-reset.schema'
 import { MailService } from '../mail/mail.service'
-import { TurnstileService } from '../common/turnstile.service'
 import { RequestResetPasswordInputDTO, ResetPasswordInputDTO } from './auth.dto'
 import { AccessLog } from './schemas/access-log.schema'
 import {
@@ -33,11 +32,9 @@ export class AuthService {
     @InjectModel(EmailVerification.name)
     private emailVerificationModel: Model<EmailVerificationDocument>,
     private readonly mailService: MailService,
-    private readonly turnstileService: TurnstileService,
-  ) {}
+    ) {}
 
   async login(userData: any) {
-    await this.turnstileService.verify(userData.turnstileToken)
 
     const user = await this.usersService.findOne({ email: userData.email })
     if (!user) {
@@ -106,7 +103,6 @@ export class AuthService {
   }
 
   async register(userData: any) {
-    await this.turnstileService.verify(userData.turnstileToken)
 
     const existingUser = await this.usersService.findOne({
       email: userData.email,
@@ -122,7 +118,7 @@ export class AuthService {
     this.validatePassword(userData.password)
 
     const hashedPassword = await bcrypt.hash(userData.password, 10)
-    const { turnstileToken, ...sanitizedUserData } = userData
+    const sanitizedUserData = userData
     const user = await this.usersService.create({
       ...sanitizedUserData,
       password: hashedPassword,
@@ -148,7 +144,6 @@ export class AuthService {
     email,
     turnstileToken,
   }: RequestResetPasswordInputDTO) {
-    await this.turnstileService.verify(turnstileToken)
 
     const user = await this.usersService.findOne({ email })
     if (!user) {

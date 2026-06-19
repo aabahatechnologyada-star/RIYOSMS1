@@ -28,7 +28,6 @@ import httpBrowserClient from '@/lib/httpBrowserClient'
 import { ApiEndpoints } from '@/config/api'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useTurnstile } from '@/lib/turnstile'
 
 const SupportFormSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -38,9 +37,6 @@ const SupportFormSchema = z.object({
     message: 'Support category is required',
   }),
   message: z.string().min(1, { message: 'Message is required' }),
-  turnstileToken: z
-    .string()
-    .min(1, { message: 'Please complete the bot verification' }),
 })
 
 export default function SupportForm() {
@@ -49,58 +45,19 @@ export default function SupportForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const router = useRouter()
 
-  const { data: session } = useSession()
-
-  const form = useForm({
-    resolver: zodResolver(SupportFormSchema),
-    defaultValues: {
-      name: session?.user?.name || '',
-      email: session?.user?.email || '',
-      phone: session?.user?.phone || '',
-      category: 'general',
-      message: '',
-      turnstileToken: '',
-    },
-  })
-
-  const {
-    containerRef: turnstileRef,
-    token: turnstileToken,
-    error: turnstileError,
-  } = useTurnstile({
-    siteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
-    onToken: (token) =>
-      form.setValue('turnstileToken', token, { shouldValidate: true }),
+  ,
     onError: (message) =>
       form.setError('turnstileToken', { type: 'manual', message }),
     onExpire: (message) =>
       form.setError('turnstileToken', { type: 'manual', message }),
   })
 
-  useEffect(() => {
-    if (turnstileToken) {
-      form.clearErrors('turnstileToken')
-    }
-  }, [turnstileToken, form])
 
-  useEffect(() => {
-    if (turnstileError) {
-      form.setError('turnstileToken', { type: 'manual', message: turnstileError })
-    }
-  }, [turnstileError, form])
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true)
     setErrorMessage(null)
 
-    if (!data.turnstileToken) {
-      form.setError('turnstileToken', {
-        type: 'manual',
-        message: 'Please complete the bot verification',
-      })
-      setIsSubmitting(false)
-      return
-    }
 
     try {
       // Use the existing httpBrowserClient to call the NestJS endpoint
@@ -225,23 +182,7 @@ export default function SupportForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='turnstileToken'
-          disabled={isSubmitting}
-          render={() => (
-            <FormItem>
-              <FormControl>
-                <div
-                  ref={turnstileRef}
-                  className='min-h-[65px] w-full flex justify-center'
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {isSubmitSuccessful && (
+                {isSubmitSuccessful && (
           <div className='flex items-center gap-2 text-green-500'>
             <Check className='h-4 w-4' /> We have received your message, we will
             get back to you soon.

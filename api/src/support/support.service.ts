@@ -30,7 +30,7 @@ export class SupportService {
   async createSupportMessage(
     createSupportMessageDto: CreateSupportMessageDto,
   ): Promise<{ message: string }> {
-    const { turnstileToken, ...sanitizedDto } = createSupportMessageDto
+    const sanitizedDto = createSupportMessageDto
     try {
       // Check rate limit: max 3 requests per 24 hours
       const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
@@ -89,7 +89,7 @@ export class SupportService {
   async requestAccountDeletion(
     createSupportMessageDto: CreateSupportMessageDto,
   ): Promise<{ message: string }> {
-    const { turnstileToken, ...sanitizedDto } = createSupportMessageDto
+    const sanitizedDto = createSupportMessageDto
     try {
       // Check if user exists
       if (
