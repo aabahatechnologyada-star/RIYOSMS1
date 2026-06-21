@@ -50,10 +50,10 @@ export class User {
   @Prop({
     type: {
       completedAt: { type: Date },
-      currentStepId: { type: String, default: 'verify_email' },
+      currentStepId: { type: String, default: 'download_app' },
       skippedStepIds: { type: [String], default: [] },
     },
-    default: () => ({ currentStepId: 'verify_email', skippedStepIds: [] }),
+    default: () => ({ currentStepId: 'download_app', skippedStepIds: [] }),
   })
   onboarding?: {
     completedAt?: Date

@@ -1,5 +1,4 @@
 export const ONBOARDING_STEP_ORDER = [
-  'verify_email',
   'download_app',
   'api_key',
   'register_device',

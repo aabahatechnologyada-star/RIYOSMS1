@@ -62,13 +62,6 @@ type StepDef = {
 
 const STEPS: StepDef[] = [
   {
-    id: 'verify_email',
-    label: 'Verify your email',
-    description: 'Required before you can send SMS.',
-    optional: false,
-    checkDone: (user) => !!user?.emailVerifiedAt,
-  },
-  {
     id: 'download_app',
     label: 'Download the Android app',
     description: 'Install TextBee on your Android device.',
@@ -230,7 +223,6 @@ export default function GetStartedCard() {
     currentSubscription.plan.name.toLowerCase() === 'free'
 
   const canNavigateToStep = useCallback((stepId: string) => {
-    if (stepId === 'verify_email') return false
     if (stepId === 'choose_plan') return isFreePlan
     return true
   }, [isFreePlan])
@@ -435,11 +427,6 @@ export default function GetStartedCard() {
                           {step.description}
                         </p>
                         <div className='mt-3 flex flex-wrap items-center gap-2'>
-                          {step.id === 'verify_email' && (
-                            <Button size='sm' asChild>
-                              <Link href={Routes.verifyEmail}>Verify email</Link>
-                            </Button>
-                          )}
                           {step.id === 'download_app' && (
                             <>
                               <Button
