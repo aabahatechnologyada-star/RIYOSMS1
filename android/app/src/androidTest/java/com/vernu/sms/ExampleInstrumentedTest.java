@@ -1,4 +1,4 @@
-package com.vernu.sms;
+package com.riyosms.com;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.vernu.smsgateway", appContext.getPackageName());
+        assertEquals("com.riyosms.comgateway", appContext.getPackageName());
     }
 }

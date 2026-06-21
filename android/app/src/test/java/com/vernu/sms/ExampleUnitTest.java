@@ -1,4 +1,4 @@
-package com.vernu.sms;
+package com.riyosms.com;
 
 import org.junit.Test;
 
