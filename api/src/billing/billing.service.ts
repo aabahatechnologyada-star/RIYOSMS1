@@ -523,16 +523,6 @@ export class BillingService {
         )
       }
 
-      if (user.emailVerifiedAt === null) {
-        console.warn('canPerformAction: User email not verified')
-        throw new HttpException(
-          {
-            message: 'Please verify your email to continue',
-          },
-          HttpStatus.BAD_REQUEST,
-        )
-      }
-
       let plan: PlanDocument
       const subscription = await this.subscriptionModel.findOne({
         user: user._id,

@@ -27,11 +27,13 @@ export class UsersService {
     email,
     password,
     phone,
+    emailVerifiedAt,
   }: {
     name: string
     email: string
     password?: string
     phone?: string
+    emailVerifiedAt?: Date
   }) {
     if (await this.findOne({ email })) {
       throw new HttpException(
@@ -47,6 +49,7 @@ export class UsersService {
       email,
       password,
       phone,
+      emailVerifiedAt,
     })
     return await newUser.save()
   }
@@ -78,7 +81,7 @@ export class UsersService {
 
     if (!u.onboarding) {
       u.onboarding = {
-        currentStepId: 'verify_email',
+        currentStepId: 'download_app',
         skippedStepIds: [],
       }
     }

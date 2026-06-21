@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common'
-import { TurnstileService } from './turnstile.service'
 
 @Module({
-  providers: [TurnstileService],
-  exports: [TurnstileService],
+  providers: [],
+  exports: [],
 })
 export class CommonModule {}
-

@@ -12,9 +12,6 @@ export class RegisterInputDTO {
 
   @ApiProperty({ type: String, required: true })
   password: string
-
-  @ApiProperty({ type: String, required: true })
-  turnstileToken: string
 }
 
 export class LoginInputDTO {
@@ -23,17 +20,11 @@ export class LoginInputDTO {
 
   @ApiProperty({ type: String, required: true })
   password: string
-
-  @ApiProperty({ type: String, required: true })
-  turnstileToken: string
 }
 
 export class RequestResetPasswordInputDTO {
   @ApiProperty({ type: String, required: true })
   email: string
-
-  @ApiProperty({ type: String, required: true })
-  turnstileToken: string
 }
 
 export class ResetPasswordInputDTO {

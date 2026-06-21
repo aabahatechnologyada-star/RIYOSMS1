@@ -17,8 +17,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY . .
 
-# Force Tailwind v3 (maxaa yeelay v4 waa la jabin)
-RUN pnpm add -D tailwindcss@^3 postcss autoprefixer
 
 # Build
 RUN pnpm build
@@ -29,8 +27,8 @@ WORKDIR /app
 
 RUN npm install -g pnpm@9
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
@@ -45,7 +43,7 @@ RUN pnpm install --prod --frozen-lockfile
 
 USER nextjs
 
-ENV PORT 3000
+ENV PORT=3000
 EXPOSE ${PORT}
 
 CMD ["node", "server"]

@@ -18,7 +18,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Clock,
-  Ellipsis,
+  MoreHorizontal,
   MessageSquare,
   Smartphone,
   Webhook,
@@ -484,7 +484,7 @@ const WebhooksHistory = () => {
                     </Button>
                   )}
 
-                  {/* Ellipsis if needed */}
+                  {/* MoreHorizontal if needed */}
                   {page > 4 && totalPages > 7 && (
                     <span className="px-1">...</span>
                   )}
@@ -533,7 +533,7 @@ const WebhooksHistory = () => {
                     }
                   )}
 
-                  {/* Ellipsis if needed */}
+                  {/* MoreHorizontal if needed */}
                   {page < totalPages - 3 && totalPages > 7 && (
                     <span className="px-1">...</span>
                   )}

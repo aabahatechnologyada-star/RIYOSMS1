@@ -19,16 +19,14 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { AlertTriangle, Check, Loader2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from '@/hooks/use-toast'
 import httpBrowserClient from '@/lib/httpBrowserClient'
 import { ApiEndpoints } from '@/config/api'
-import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useTurnstile } from '@/lib/turnstile'
 
 const SupportFormSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -38,16 +36,12 @@ const SupportFormSchema = z.object({
     message: 'Support category is required',
   }),
   message: z.string().min(1, { message: 'Message is required' }),
-  turnstileToken: z
-    .string()
-    .min(1, { message: 'Please complete the bot verification' }),
 })
 
 export default function SupportForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const router = useRouter()
 
   const { data: session } = useSession()
 
@@ -57,53 +51,16 @@ export default function SupportForm() {
       name: session?.user?.name || '',
       email: session?.user?.email || '',
       phone: session?.user?.phone || '',
-      category: 'general',
+      category: 'general' as any,
       message: '',
-      turnstileToken: '',
     },
   })
-
-  const {
-    containerRef: turnstileRef,
-    token: turnstileToken,
-    error: turnstileError,
-  } = useTurnstile({
-    siteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
-    onToken: (token) =>
-      form.setValue('turnstileToken', token, { shouldValidate: true }),
-    onError: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-    onExpire: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-  })
-
-  useEffect(() => {
-    if (turnstileToken) {
-      form.clearErrors('turnstileToken')
-    }
-  }, [turnstileToken, form])
-
-  useEffect(() => {
-    if (turnstileError) {
-      form.setError('turnstileToken', { type: 'manual', message: turnstileError })
-    }
-  }, [turnstileError, form])
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true)
     setErrorMessage(null)
 
-    if (!data.turnstileToken) {
-      form.setError('turnstileToken', {
-        type: 'manual',
-        message: 'Please complete the bot verification',
-      })
-      setIsSubmitting(false)
-      return
-    }
-
     try {
-      // Use the existing httpBrowserClient to call the NestJS endpoint
       const response = await httpBrowserClient.post(
         ApiEndpoints.support.customerSupport(),
         data
@@ -219,22 +176,6 @@ export default function SupportForm() {
                   placeholder='How can we help you?'
                   className='min-h-[100px]'
                   {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='turnstileToken'
-          disabled={isSubmitting}
-          render={() => (
-            <FormItem>
-              <FormControl>
-                <div
-                  ref={turnstileRef}
-                  className='min-h-[65px] w-full flex justify-center'
                 />
               </FormControl>
               <FormMessage />

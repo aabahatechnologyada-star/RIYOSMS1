@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,7 +18,6 @@ import {
 import { signIn } from 'next-auth/react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Routes } from '@/config/routes'
-import { useTurnstile } from '@/lib/turnstile'
 
 const registerSchema = z.object({
   name: z
@@ -30,10 +28,7 @@ const registerSchema = z.object({
     .string()
     .min(8, { message: 'Password must be at least 8 characters long' }),
   phone: z.string().optional(),
-  marketingOptIn: z.boolean().optional().default(true),
-  turnstileToken: z
-    .string()
-    .min(1, { message: 'Please complete the bot verification' }),
+  marketingOptIn: z.boolean(),
 })
 
 type RegisterFormValues = z.infer<typeof registerSchema>
@@ -49,46 +44,11 @@ export default function RegisterForm() {
       password: '',
       phone: '',
       marketingOptIn: true,
-      turnstileToken: '',
     },
   })
 
-  const {
-    containerRef: turnstileRef,
-    token: turnstileToken,
-    error: turnstileError,
-  } = useTurnstile({
-    siteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
-    onToken: (token) =>
-      form.setValue('turnstileToken', token, { shouldValidate: true }),
-    onError: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-    onExpire: (message) =>
-      form.setError('turnstileToken', { type: 'manual', message }),
-  })
-
-  useEffect(() => {
-    if (turnstileToken) {
-      form.clearErrors('turnstileToken')
-    }
-  }, [turnstileToken, form])
-
-  useEffect(() => {
-    if (turnstileError) {
-      form.setError('turnstileToken', { type: 'manual', message: turnstileError })
-    }
-  }, [turnstileError, form])
-
   const onSubmit = async (data: RegisterFormValues) => {
     form.clearErrors()
-
-    if (!data.turnstileToken) {
-      form.setError('turnstileToken', {
-        type: 'manual',
-        message: 'Please complete the bot verification',
-      })
-      return
-    }
 
     try {
       const result = await signIn('email-password-register', {
@@ -98,7 +58,6 @@ export default function RegisterForm() {
         name: data.name,
         phone: data.phone,
         marketingOptIn: data.marketingOptIn,
-        turnstileToken: data.turnstileToken,
       })
 
       if (result?.error) {
@@ -108,7 +67,7 @@ export default function RegisterForm() {
           message: 'Failed to create account',
         })
       } else {
-        router.push(`${Routes.verifyEmail}?verificationEmailSent=1`)
+        router.push(Routes.dashboard)
       }
     } catch (error) {
       console.error('register error:', error)
@@ -174,21 +133,6 @@ export default function RegisterForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='turnstileToken'
-          render={() => (
-            <FormItem>
-              <FormControl>
-                <div
-                  ref={turnstileRef}
-                  className='min-h-[65px] w-full flex justify-center'
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {form.formState.errors.root && (
           <p className='text-sm font-medium text-red-500'>
             {form.formState.errors.root.message}
@@ -222,7 +166,6 @@ export default function RegisterForm() {
         >
           {form.formState.isSubmitting ? (
             <>
-              {/* <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> */}
               Creating account...
             </>
           ) : (

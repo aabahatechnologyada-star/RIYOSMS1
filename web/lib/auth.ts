@@ -31,15 +31,15 @@ export const authOptions = {
       credentials: {
         email: { label: 'email', type: 'text' },
         password: { label: 'Password', type: 'password' },
-        turnstileToken: { label: 'Turnstile Token', type: 'text' },
+
       },
       async authorize(credentials) {
-        const { email, password, turnstileToken } = credentials
+        const { email, password } = credentials
         try {
           const res = await httpServerClient.post(ApiEndpoints.auth.login(), {
             email,
             password,
-            turnstileToken,
+
           })
 
           const user = res.data.data.user
@@ -64,10 +64,10 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
         name: { label: 'Name', type: 'text' },
         phone: { label: 'Phone', type: 'text' },
-        turnstileToken: { label: 'Turnstile Token', type: 'text' },
+
       },
       async authorize(credentials) {
-        const { email, password, name, phone, turnstileToken } = credentials
+        const { email, password, name, phone } = credentials
         try {
           const res = await httpServerClient.post(
             ApiEndpoints.auth.register(),
@@ -76,7 +76,7 @@ export const authOptions = {
               password,
               name,
               phone,
-              turnstileToken,
+
             }
           )
 
@@ -130,6 +130,7 @@ export const authOptions = {
   session: {
     strategy: 'jwt',
   },
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (trigger === 'update') {

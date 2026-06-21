@@ -7,7 +7,6 @@ export const Routes = {
   register: '/register',
   logout: '/logout',
   resetPassword: '/reset-password',
-  verifyEmail: '/verify-email',
 
   dashboard: '/dashboard',
 

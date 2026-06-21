@@ -1,13 +1,12 @@
 'use client'
 
-import { Home, MessageSquareText, UserCircle, Users } from 'lucide-react'
+import { Home, MessageSquare, UserCircle, Users } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import AccountDeletionAlert from './(components)/account-deletion-alert'
 import UpgradeToProAlert from './(components)/upgrade-to-pro-alert'
 import UpdateAppModal from './(components)/update-app-modal'
 import UpdateAppNotificationBar from './(components)/update-app-notification-bar'
-import VerifyEmailAlert from './(components)/verify-email-alert'
 import PastDueBillingAlert from './(components)/past-due-billing-alert'
 import { SurveyModal } from '@/components/shared/survey-modal'
 
@@ -31,7 +30,7 @@ export default function DashboardLayout({
           />
           <NavItem
             href='/dashboard/messaging'
-            icon={<MessageSquareText className='h-6 w-6 stroke-[1.5]' />}
+            icon={<MessageSquare className='h-6 w-6 stroke-[1.5]' />}
             label='Messaging'
             isActive={pathname === '/dashboard/messaging'}
           />
@@ -54,7 +53,6 @@ export default function DashboardLayout({
       <main className='flex-1 min-w-0 overflow-auto md:ml-24'>
         <div className='space-y-2 p-4'>
           <UpdateAppNotificationBar />
-          <VerifyEmailAlert />
           <PastDueBillingAlert />
           <AccountDeletionAlert />
           <UpgradeToProAlert />
@@ -74,7 +72,7 @@ export default function DashboardLayout({
           />
           <MobileNavItem
             href='/dashboard/messaging'
-            icon={<MessageSquareText className='h-5 w-5 stroke-[1.5]' />}
+            icon={<MessageSquare className='h-5 w-5 stroke-[1.5]' />}
             label='Messaging'
             isActive={pathname === '/dashboard/messaging'}
           />

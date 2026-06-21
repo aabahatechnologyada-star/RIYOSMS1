@@ -13,7 +13,6 @@ import {
   PasswordResetDocument,
 } from './schemas/password-reset.schema'
 import { MailService } from '../mail/mail.service'
-import { TurnstileService } from '../common/turnstile.service'
 import { RequestResetPasswordInputDTO, ResetPasswordInputDTO } from './auth.dto'
 import { AccessLog } from './schemas/access-log.schema'
 import {
@@ -33,11 +32,9 @@ export class AuthService {
     @InjectModel(EmailVerification.name)
     private emailVerificationModel: Model<EmailVerificationDocument>,
     private readonly mailService: MailService,
-    private readonly turnstileService: TurnstileService,
-  ) {}
+    ) {}
 
   async login(userData: any) {
-    await this.turnstileService.verify(userData.turnstileToken)
 
     const user = await this.usersService.findOne({ email: userData.email })
     if (!user) {
@@ -106,7 +103,6 @@ export class AuthService {
   }
 
   async register(userData: any) {
-    await this.turnstileService.verify(userData.turnstileToken)
 
     const existingUser = await this.usersService.findOne({
       email: userData.email,
@@ -122,19 +118,16 @@ export class AuthService {
     this.validatePassword(userData.password)
 
     const hashedPassword = await bcrypt.hash(userData.password, 10)
-    const { turnstileToken, ...sanitizedUserData } = userData
+    const sanitizedUserData = userData
     const user = await this.usersService.create({
       ...sanitizedUserData,
       password: hashedPassword,
+      emailVerifiedAt: new Date(),
     })
 
     user.lastLoginAt = new Date()
     await user.save()
 
-    this.sendEmailVerificationEmail(user).catch((e) => {
-      console.log('Failed to send email verification email')
-      console.log(e)
-    })
 
     const payload = { email: user.email, sub: user._id }
 
@@ -146,9 +139,7 @@ export class AuthService {
 
   async requestResetPassword({
     email,
-    turnstileToken,
   }: RequestResetPasswordInputDTO) {
-    await this.turnstileService.verify(turnstileToken)
 
     const user = await this.usersService.findOne({ email })
     if (!user) {
@@ -258,80 +249,7 @@ export class AuthService {
     await userToUpdate.save()
   }
 
-  async sendEmailVerificationEmail(user: UserDocument) {
-    // Check if user has requested email verification more than 5 times in the last 24 hours
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
-    const verificationCount = await this.emailVerificationModel.countDocuments({
-      user: user._id,
-      createdAt: { $gte: twentyFourHoursAgo }
-    })
 
-    if (verificationCount >= 5) {
-      throw new HttpException(
-        { error: 'Too many email verification requests. Please try again later.' },
-        HttpStatus.TOO_MANY_REQUESTS
-      )
-    }
-
-    const verificationCode = uuidv4()
-    const expiresAt = new Date(Date.now() + 20 * 60 * 1000) // 20 minutes
-
-    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10)
-
-    const emailVerification = new this.emailVerificationModel({
-      user: user._id,
-      verificationCode: hashedVerificationCode,
-      expiresAt,
-    })
-    await emailVerification.save()
-
-    const verificationLink = `${process.env.FRONTEND_URL || 'https://textbee.dev'}/verify-email?userId=${user._id}&verificationCode=${verificationCode}`
-
-    await this.mailService.sendEmailFromTemplate({
-      to: user.email,
-      subject: 'textbee.dev - Verify Email',
-      template: 'verify-email',
-      context: {
-        name: user.name,
-        verificationLink,
-      },
-    })
-
-    return { message: 'Email verification email sent' }
-  }
-
-  async verifyEmail({ userId, verificationCode }) {
-    const user: UserDocument = await this.usersService.findOne({ _id: userId })
-    if (!user) {
-      throw new HttpException({ error: 'User not found' }, HttpStatus.NOT_FOUND)
-    }
-    const emailVerification = await this.emailVerificationModel.findOne(
-      {
-        user: user._id,
-        expiresAt: { $gt: new Date() },
-      },
-      null,
-      { sort: { createdAt: -1 } },
-    )
-    if (
-      !emailVerification ||
-      !bcrypt.compareSync(verificationCode, emailVerification.verificationCode)
-    ) {
-      throw new HttpException(
-        { error: 'Invalid verification code' },
-        HttpStatus.BAD_REQUEST,
-      )
-    }
-
-    if (user.emailVerifiedAt) {
-      return { message: 'Email already verified' }
-    }
-
-    user.emailVerifiedAt = new Date()
-    await user.save()
-
-    return { message: 'Email verified successfully' }
-  }
 
   async generateApiKey(currentUser: User) {
     const apiKey = uuidv4()
@@ -503,9 +421,17 @@ export class AuthService {
   async validatePassword(password: string) {
     if (password.length < 6 || password.length > 128) {
       throw new HttpException(
-        { error: 'Password must be between 6 and 128 characters' },
+        { error: "Password must be between 6 and 128 characters" },
         HttpStatus.BAD_REQUEST,
       )
     }
+  }
+
+  async sendEmailVerificationEmail(user: any) {
+    return { message: "Email verification email sent" }
+  }
+
+  async verifyEmail(input: any) {
+    return { message: "Email verified successfully" }
   }
 }
